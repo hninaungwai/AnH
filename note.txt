@@ -1,0 +1,93 @@
+> Start project
+django-admin startproject AnH
+
+> migrate database
+python manage.py migrate
+
+>start app
+python manage.py startapp shop
+
+#open sublime
+
+#register app in project setting
+
+#create a model
+from django.db import models
+class Pharmacy(models.Model):
+	name = models.CharField(max_length=255)
+	batch = models.IntegerField()
+	price = models.CharField(max_length=225)
+	promotion = models.CharField(max_length=255)
+	foc = models.CharField(max_length=255)
+	exp = models.DateTimeField()
+	start = models.DateTimeField('date published')
+
+	def __str__(self):
+		return self.name
+
+#python manage.py makemigrations shop
+
+#python manage.py migrate
+
+#register model in admin
+
+#admin account creation
+python manage.py createsuperuser
+
+#python manage.py runserver
+
+======================================
+
+#update views.py in application folder
+from django.shortcuts import render
+from .models import Pharmacy
+
+#Create your views here.
+def home(request):
+	myshop = Pharmacy.objects.all()
+	context = {
+		'myshop' :myshop
+	}
+	return render(request, 'shop/index.html', context)
+
+def contact(request):
+	return render(request, 'shop/contact.html')
+
+#update urls.py in project folder
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('shop.urls')),
+]
+
+# update urls.py in application folder
+from django.urls import path
+from .import views
+
+urlpatterns = [
+	path('', views.home, name='home'),
+	path('contact/', views.contact, name='contact'),
+]
+
+# create template shop/templates/shop/index.html
+
+# update template in shop/index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+
+{% for x in myshop %}
+	{{ x.name }}
+	{{ x.price }}
+	{{ x.promotion }}
+	<br>
+{% endfor %}
+
+</body>
+</html>
